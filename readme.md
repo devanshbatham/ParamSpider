@@ -12,6 +12,7 @@
 
 ### Usage instructions :
 ```
+Note : Use python 3.7+
 $ git clone https://github.com/devanshbatham/ParamSpider
 $ cd ParamSpider 
 $ pip install -r requirements.txt
