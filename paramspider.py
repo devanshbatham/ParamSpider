@@ -30,6 +30,7 @@ def main():
     parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
     parser.add_argument('-o','--output' , help = 'Output file name [by defualt it is \'result.txt\']')
+    parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
     args = parser.parse_args()
 
     url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
@@ -51,7 +52,7 @@ def main():
     if args.exclude:
         print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results   : {black_list}\u001b[0m\n")
     
-    final_uris = extractor.param_extract(response , args.level , black_list)
+    final_uris = extractor.param_extract(response , args.level , black_list, args.placeholder)
     save_it.save_func(final_uris , args.output , args.domain)
     
     print("\u001b[32;1m")

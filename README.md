@@ -34,6 +34,9 @@ $ python3 paramspider.py --domain hackerone.com --level high
 
 4 - Saving the results 
 $ python3 paramspider.py --domain hackerone.com --exclude php,jpg --output hackerone.txt
+
+5 - Using with a custom placeholder text (default is FUZZ), e.g. don't add a placeholder
+$ python3 paramspider.py --domain hackerone.com --placeholder ""
 ```
 
  ## Example : 
