@@ -4,7 +4,10 @@ import errno
 
 def save_func(final_urls , outfile , domain):
     if outfile:
-        filename = f'output/{outfile}'
+        if "/" in outfile:
+            filename = f'{outfile}'
+        else : 
+            filename = f'output/{outfile}'
     else :
         filename = f"output/{domain}.txt"
     
