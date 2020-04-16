@@ -38,7 +38,7 @@ $ python3 paramspider.py --domain hackerone.com --level high
 $ python3 paramspider.py --domain hackerone.com --exclude php,jpg --output hackerone.txt
 
 5 - Using with a custom placeholder text (default is FUZZ), e.g. don't add a placeholder
-$ python3 paramspider.py --domain hackerone.com --placeholder ""
+$ python3 paramspider.py --domain hackerone.com --placeholder FUZZ2
 ```
 ### ParamSpider + GF  (for massive pwnage)
 
