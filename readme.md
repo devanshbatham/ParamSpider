@@ -5,7 +5,7 @@
   
 
  - Finds parameters from web archives of the entered domain.
- - Finds the parameters from subdomains as well.
+ - Finds parameters from subdomains as well.
  - Gives support to exclude urls with specific extensions.
  - Saves the output result in a nice and clean manner.
  - It mines the parameters from web archives (without interacting with the target host)
