@@ -30,7 +30,7 @@ def main():
     parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
     parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
-    parser.add_argument('-o','--output' , help = 'Output file name [by defualt it is \'result.txt\']')
+    parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
     parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
     args = parser.parse_args()
 
