@@ -25,7 +25,6 @@ def main():
                            \u001b[32m - coded with <3 by Devansh Batham\u001b[0m 
     """
     print(banner)
-    assert sys.version_info >= (3, 7), "Script requires Python 3.7+."
 
     parser = argparse.ArgumentParser(description='ParamSpider a parameter discovery suite')
     parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
