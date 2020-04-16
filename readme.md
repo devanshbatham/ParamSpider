@@ -1,3 +1,4 @@
+
   ## ParamSpider : Parameter miner for humans
   
   ![ParamSpider](https://raw.githubusercontent.com/devanshbatham/ParamSpider/master/static/banner.PNG)
@@ -5,6 +6,7 @@
   
 
  - Finds parameters from web archives of the entered domain.
+ - Finds parameters from subdomains as well.
  - Gives support to exclude urls with specific extensions.
  - Saves the output result in a nice and clean manner.
  - It mines the parameters from web archives (without interacting with the target host)
@@ -35,6 +37,33 @@ $ python3 paramspider.py --domain hackerone.com --level high
 4 - Saving the results 
 $ python3 paramspider.py --domain hackerone.com --exclude php,jpg --output hackerone.txt
 ```
+### ParamSpider + GF  (for massive pwnage)
+
+Lets say you have already installed ParamSpider and now you want to filter out the juicy parameters from plethora of  parameters. No worries you can easily do it using [GF(by tomnomnom)](https://github.com/tomnomnom/gf) .
+
+**Note** : Make sure you have [go](https://golang.org/doc/install) properly installed on your machine .
+
+**Follow along this :** 
+```
+$ go get -u github.com/tomnomnom/gf
+$ cp -r $GOPATH/src/github.com/tomnomnom/gf/examples ~/.gf
+
+Note : Replace '/User/levi/go/bin/gf' with the path where gf binary is located in your system.
+
+$ alias gf='/User/levi/go/bin/gf'
+$ cd ~/.gf/
+Note : Paste JSON files(https://github.com/devanshbatham/ParamSpider/tree/master/gf_profiles)  in ~/.gf/ folder
+
+Now run ParamSpider and navigate to the output directory
+
+$ gf redirect domain.txt    //for potential open redirect/SSRF parameters
+$ gf xss domain.txt         //for potential xss vulnerable parameters
+$ gf potential domain.txt   //for xss + ssrf + open redirect parameters
+$ gf wordpress domain.txt   //for wordpress urls
+
+[More GF profiles to be added in future]
+
+```
 
  ## Example : 
 ```
@@ -43,6 +72,7 @@ $ python3 paramspider.py --domain bugcrowd.com --exclude woff,css,js,png,svg,php
 ```
 
 ![](https://raw.githubusercontent.com/devanshbatham/ParamSpider/master/static/example.PNG)
+
 #### Note : 
 ```
 As it fetches the parameters from web archive data ,
