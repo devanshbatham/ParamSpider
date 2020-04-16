@@ -6,6 +6,7 @@ import requests
 import re
 import argparse
 import os
+import sys
 import time 
 start_time = time.time()
 
@@ -24,16 +25,19 @@ def main():
                            \u001b[32m - coded with <3 by Devansh Batham\u001b[0m 
     """
     print(banner)
+    assert sys.version_info >= (3, 7), "Script requires Python 3.7+."
 
     parser = argparse.ArgumentParser(description='ParamSpider a parameter discovery suite')
     parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
     parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
-    parser.add_argument('-o','--output' , help = 'Output file name [by defualt it is \'result.txt\']')
+    parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
     args = parser.parse_args()
 
     url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
     response = requester.connector(url)
+    if response == False:
+        return
     response = unquote(response)
 
     # for extensions to be excluded 
