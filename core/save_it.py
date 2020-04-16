@@ -20,5 +20,5 @@ def save_func(final_urls , outfile , domain):
     
     
     for i in final_urls:
-        with open(filename, "a") as f:
+        with open(filename, "a" , encoding="utf-8") as f:
             f.write(i+"\n")

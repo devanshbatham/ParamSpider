@@ -1,5 +1,5 @@
 {
     "flags" : "-HanrE",
-    "pattern" : "(api_key=|api=|password=|email=|emailto=|token=|username=|csrf_token=|unsubscribe_token=|p=|q=|query=|search=|id=|item=|page_id=)"
+    "pattern" : "(callback=|jsonp=|api_key=|api=|password=|email=|emailto=|token=|username=|csrf_token=|unsubscribe_token=|p=|q=|query=|search=|id=|item=|page_id=)"
 
 }
