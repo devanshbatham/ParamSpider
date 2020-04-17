@@ -32,6 +32,7 @@ def main():
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
     parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
     parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
+    parser.add_argument('-q', '--quiet', help='Do not print the results to the screen', action='store_true')
     args = parser.parse_args()
 
     url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
@@ -57,10 +58,11 @@ def main():
     
     final_uris = extractor.param_extract(response , args.level , black_list, args.placeholder)
     save_it.save_func(final_uris , args.output , args.domain)
-    
-    print("\u001b[32;1m")
-    print('\n'.join(final_uris))
-    print("\u001b[0m")
+
+    if not args.quiet:
+        print("\u001b[32;1m")
+        print('\n'.join(final_uris))
+        print("\u001b[0m")
 
     
     print(f"\n\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
