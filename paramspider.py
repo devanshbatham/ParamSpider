@@ -6,6 +6,7 @@ import requests
 import re
 import argparse
 import os
+import sys
 import time 
 start_time = time.time()
 
@@ -29,12 +30,14 @@ def main():
     parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
     parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
-    parser.add_argument('-o','--output' , help = 'Output file name [by defualt it is \'result.txt\']')
+    parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
     parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
     args = parser.parse_args()
 
     url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
     response = requester.connector(url)
+    if response == False:
+        return
     response = unquote(response)
 
     # for extensions to be excluded 
@@ -62,7 +65,11 @@ def main():
     
     print(f"\n\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
     if args.output:
-        print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{args.output}\u001b[31m" )
+        if "/" in args.output:
+            print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36m{args.output}\u001b[31m" )
+
+        else:
+            print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{args.output}\u001b[31m" )
     else:
         print(f"\u001b[32m[+] Output is saved here   :\u001b[31m \u001b[36moutput/{args.domain}.txt\u001b[31m")
     print("\n\u001b[31m[!] Total execution time      : %ss\u001b[0m" % str((time.time() - start_time))[:-12])
