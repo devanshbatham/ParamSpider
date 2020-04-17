@@ -41,8 +41,6 @@ $ python3 paramspider.py --domain hackerone.com
 $ python3 paramspider.py --domain hackerone.com
 -> Output ex : https://hackerone.com/test.php?q=FUZZ
 
-  
-
 2 - For excluding urls with specific extensions
 $ python3 paramspider.py --domain hackerone.com --exclude php,jpg,svg
 
@@ -58,6 +56,9 @@ $ python3 paramspider.py --domain hackerone.com --placeholder FUZZ2
 
 6 - Using the quiet mode (without printing the URLs on screen)
 $ python3 paramspider.py --domain hackerone.com --quiet
+
+7 - Exclude subdomains [for parameters from domain+subdomains, do not specify this argument]
+$ python3 paramspider.py --domain hackerone.com --subs False 
 ```
 
 ### ParamSpider + GF (for massive pwnage)
