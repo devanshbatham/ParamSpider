@@ -3,6 +3,7 @@
     "flags" : "-HanrE",
     "patterns" : [
     "url=",
+    "from_url=",
     "load_url=",
     "file_url=",
     "page_url=",
