@@ -5,6 +5,7 @@
     "jsonp=",
     "api_key=",
     "api=",
+    "password=",
     "email=",
     "emailto=",
     "token=",
