@@ -78,40 +78,16 @@ def main():
     if not final_uris:
         print("\u001b[31;1mNo URLS with parameters found\u001b[0m")
         return
-    if args.subs == True:
-        url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
-    else:
-        url = f"http://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
 
-    response = requester.connector(url)
-    if response == False:
-        return
-    response = unquote(response)
-
-    # for extensions to be excluded 
-    black_list = []
-    if args.exclude:
-         if "," in args.exclude:
-             black_list = args.exclude.split(",")
-             for i in range(len(black_list)):
-                 black_list[i] = "." + black_list[i]
-         else:
-             black_list.append("." + args.exclude)
-             
-    else: 
-         black_list = []
-    if args.exclude:
-        print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results   : {black_list}\u001b[0m\n")
-    
-    final_uris = extractor.param_extract(response , args.level , black_list, args.placeholder)
-    save_it.save_func(final_uris , args.output , args.domain)
+    filename = args.domain or datetime.timestamp(datetime.now())
+    save_it.save_func(final_uris , args.output , filename)
 
     if not args.quiet:
         print("\u001b[32;1m")
         print('\n'.join(final_uris))
         print("\u001b[0m")
 
-    
+
     print(f"\n\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
     if args.output:
         if "/" in args.output:
@@ -120,7 +96,7 @@ def main():
         else:
             print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{args.output}\u001b[31m" )
     else:
-        print(f"\u001b[32m[+] Output is saved here   :\u001b[31m \u001b[36moutput/{args.domain}.txt\u001b[31m")
+        print(f"\u001b[32m[+] Output is saved here   :\u001b[31m \u001b[36moutput/{filename}.txt\u001b[31m")
     print("\n\u001b[31m[!] Total execution time      : %ss\u001b[0m" % str((time.time() - start_time))[:-12])
 
 
