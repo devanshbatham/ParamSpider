@@ -41,6 +41,7 @@ def main():
     args = parser.parse_args()
 
     if not sys.stdin.isatty():
+        print("Waiting for url feed from stdin...")
         domain_urls = sys.stdin.read().strip()
     else:
         if not args.domain:
