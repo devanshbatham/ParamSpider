@@ -1,3 +1,6 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from core import requester
 from core import extractor
 from core import save_it
@@ -27,7 +30,7 @@ def main():
     print(banner)
 
     parser = argparse.ArgumentParser(description='ParamSpider a parameter discovery suite')
-    parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
+    parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required = False)
     parser.add_argument('-s' ,'--subs' , help = 'Set False for no subs [ex : --subs False ]' , default=True)
     parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
     parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
@@ -36,6 +39,45 @@ def main():
     parser.add_argument('-q', '--quiet', help='Do not print the results to the screen', action='store_true')
     args = parser.parse_args()
 
+    if not sys.stdin.isatty():
+        domain_urls = sys.stdin.read().strip()
+    else:
+        if not args.domain:
+            print("At least an URLS list from stdin (cat urls.txt | ./paramspider) or a domain name (-d) is required.")
+            return
+        else:
+            if args.subs == True:
+                url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+            else:
+                url = f"http://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+
+            domain_urls = requester.connector(url)
+
+    if not domain_urls:
+        return
+
+    domain_urls = unquote(domain_urls)
+
+    # for extensions to be excluded
+    black_list = []
+    if args.exclude:
+         if "," in args.exclude:
+             black_list = args.exclude.split(",")
+             for i in range(len(black_list)):
+                 black_list[i] = "." + black_list[i]
+         else:
+             black_list.append("." + args.exclude)
+
+    else:
+         black_list = []
+    if args.exclude:
+        print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results: {black_list}\u001b[0m\n")
+
+    final_uris = extractor.param_extract(domain_urls , args.level , black_list, args.placeholder)
+
+    if not final_uris:
+        print("\u001b[31;1mNo URLS with parameters found\u001b[0m")
+        return
     if args.subs == True:
         url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
     else:
