@@ -2,13 +2,13 @@ import os
 import errno
 
 
-def save_func(final_urls , outfile , filename):
+def save_func(final_urls, outfile, filename):
     if outfile:
         if "/" in outfile:
             file_path = f'{outfile}'
-        else :
+        else:
             file_path = f'output/{outfile}'
-    else :
+    else:
         file_path = f"output/{filename}.txt"
 
     if os.path.exists(file_path):
@@ -21,7 +21,6 @@ def save_func(final_urls , outfile , filename):
             if exc.errno != errno.EEXIST:
                 raise
 
-
     for i in final_urls:
-        with open(file_path, "a" , encoding="utf-8") as f:
-            f.write(i+"\n")
+        with open(file_path, "a", encoding="utf-8") as f:
+            f.write(i + "\n")
