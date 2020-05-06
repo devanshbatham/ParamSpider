@@ -1,7 +1,7 @@
 {
 
-  "flags": "-HanrE",
-  "patterns": [
+    "flags" : "-HanrE",
+    "patterns" : [
     "url=",
     "from_url=",
     "load_url=",
@@ -25,5 +25,6 @@
     "next_page=",
     "file=",
     "load_file="
-  ]
-}
+    ]
+    }
+    
