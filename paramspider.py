@@ -1,52 +1,66 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from core import requester
 from core import extractor
 from core import save_it
-from urllib.parse import unquote 
+from urllib.parse import unquote
+from datetime import datetime
 import requests
 import re
 import argparse
 import os
 import sys
-import time 
-start_time = time.time()
+import time
 
+start_time = time.time()
 
 def main():
     if os.name == 'nt':
         os.system('cls')
     banner = """\u001b[36m
 
-         ___                               _    __       
+         ___                               _    __
         / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
        / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
-      /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
-                                  /_/     \u001b[0m               
-                            
-                           \u001b[32m - coded with <3 by Devansh Batham\u001b[0m 
+      /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/
+                                  /_/     \u001b[0m
+
+                           \u001b[32m - coded with <3 by Devansh Batham\u001b[0m
     """
     print(banner)
 
-    parser = argparse.ArgumentParser(description='ParamSpider a parameter discovery suite')
-    parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
-    parser.add_argument('-s' ,'--subs' , help = 'Set False for no subs [ex : --subs False ]' , default=True)
-    parser.add_argument('-l','--level' ,  help = 'For nested parameters [ex : --level high]')
-    parser.add_argument('-e','--exclude', help= 'extensions to exclude [ex --exclude php,aspx]')
-    parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
-    parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
-    parser.add_argument('-q', '--quiet', help='Do not print the results to the screen', action='store_true')
+    parser = argparse.ArgumentParser(description = 'ParamSpider a parameter discovery suite')
+    parser.add_argument('-d', '--domain',      help = 'Domain name of the taget [ex : hackerone.com]' , required = False)
+    parser.add_argument('-s', '--subs',        help = 'Set False for no subs [ex : --subs False ]' , default = True)
+    parser.add_argument('-l', '--level',       help = 'For nested parameters [ex : --level high]')
+    parser.add_argument('-e', '--exclude',     help = 'extensions to exclude [ex --exclude php,aspx]')
+    parser.add_argument('-o', '--output',      help = 'Output file name [by default it is \'domain.txt\']')
+    parser.add_argument('-p', '--placeholder', help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
+    parser.add_argument('-q', '--quiet',       help = 'Do not print the results to the screen', action = 'store_true')
     args = parser.parse_args()
 
-    if args.subs == True:
-        url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+    if not sys.stdin.isatty():
+        print("Waiting for url feed from stdin...")
+        domain_urls = sys.stdin.read().strip()
     else:
-        url = f"http://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+        if not args.domain:
+            print("At least an URLS list from stdin (cat urls.txt | ./paramspider) or a domain name (-d) is required.")
+            return
+        else:
+            if args.subs == True:
+                url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+            else:
+                url = f"http://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
 
-    response = requester.connector(url)
-    if response == False:
+            domain_urls = requester.connector(url)
+
+    if not domain_urls:
         return
-    response = unquote(response)
 
-    # for extensions to be excluded 
+    domain_urls = unquote(domain_urls)
+
+    # for extensions to be excluded
     black_list = []
     if args.exclude:
          if "," in args.exclude:
@@ -55,22 +69,28 @@ def main():
                  black_list[i] = "." + black_list[i]
          else:
              black_list.append("." + args.exclude)
-             
-    else: 
+
+    else:
          black_list = []
     if args.exclude:
-        print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results   : {black_list}\u001b[0m\n")
-    
-    final_uris = extractor.param_extract(response , args.level , black_list, args.placeholder)
-    save_it.save_func(final_uris , args.output , args.domain)
+        print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results : {black_list}\u001b[0m\n")
+
+    final_uris = extractor.param_extract(domain_urls, args.level, black_list, args.placeholder)
+
+    if not final_uris:
+        print("\u001b[31;1mNo URLS with parameters found\u001b[0m")
+        return
+
+    filename = args.domain or datetime.timestamp(datetime.now())
+    save_it.save_func(final_uris, args.output, filename)
 
     if not args.quiet:
         print("\u001b[32;1m")
         print('\n'.join(final_uris))
         print("\u001b[0m")
 
-    
     print(f"\n\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
+
     if args.output:
         if "/" in args.output:
             print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36m{args.output}\u001b[31m" )
@@ -78,12 +98,9 @@ def main():
         else:
             print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{args.output}\u001b[31m" )
     else:
-        print(f"\u001b[32m[+] Output is saved here   :\u001b[31m \u001b[36moutput/{args.domain}.txt\u001b[31m")
-    print("\n\u001b[31m[!] Total execution time      : %ss\u001b[0m" % str((time.time() - start_time))[:-12])
+        print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{filename}.txt\u001b[31m")
 
-
-
+    print("\n\u001b[31m[!] Total execution time : %ss\u001b[0m" % str((time.time() - start_time))[:-12])
 
 if __name__ == "__main__":
     main()
-    
