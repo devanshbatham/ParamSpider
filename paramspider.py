@@ -57,7 +57,7 @@ def main():
              black_list.append("." + args.exclude)
              
     else: 
-         black_list = []
+         black_list = [] # for blacklists
     if args.exclude:
         print(f"\u001b[31m[!] URLS containing these extensions will be excluded from the results   : {black_list}\u001b[0m\n")
     
