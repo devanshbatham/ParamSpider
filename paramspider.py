@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from core import requester
 from core import extractor
 from core import save_it
