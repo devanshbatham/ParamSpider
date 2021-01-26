@@ -35,18 +35,24 @@ def main():
     parser.add_argument('-o','--output' , help = 'Output file name [by default it is \'domain.txt\']')
     parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
     parser.add_argument('-q', '--quiet', help='Do not print the results to the screen', action='store_true')
+    parser.add_argument('-r', '--retries', help='Specify number of retries for 4xx and 5xx errors', default=3)
     args = parser.parse_args()
 
     if args.subs == True:
-        url = f"http://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+        url = f"https://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
     else:
-        url = f"http://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
-
-    response = requester.connector(url)
+        url = f"https://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+    
+    retry = True
+    retries = 0
+    while retry == True and retries <= args.retries:
+             response, retry = requester.connector(url)
+             retry = retry
+             retries += 1
     if response == False:
-        return
+         return
     response = unquote(response)
-
+   
     # for extensions to be excluded 
     black_list = []
     if args.exclude:
@@ -70,8 +76,8 @@ def main():
         print('\n'.join(final_uris))
         print("\u001b[0m")
 
-    
-    print(f"\n\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
+    print(f"\n\u001b[32m[+] Total number of retries:  {retries-1}\u001b[31m")
+    print(f"\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
     if args.output:
         if "/" in args.output:
             print(f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36m{args.output}\u001b[31m" )
