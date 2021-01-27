@@ -33,22 +33,31 @@ def connector(url):
 ]
     user_agent = random.choice(user_agent_list)
     headers = {'User-Agent': user_agent}
+ 
     try:
         # TODO control request headers in here
-        response = requests.get(url,headers=headers ,timeout=30)
-        result = response.text
-    except requests.ConnectionError as e:
-        raise ConnectionError("\u001b[31;1mCan not connect to server. Check your internet connection\u001b[0m")
-    except requests.Timeout as e:
-        raise TimeoutError("\u001b[31;1mOOPS!! Timeout Error\u001b[0m")
-    except requests.RequestException as e:
-        raise AttributeError("\u001b[31;1mError in HTTP request\u001b[0m")
-    except KeyboardInterrupt:
-        raise KeyboardInterrupt("\u001b[31;1mInterrupted by user\u001b[0m")
-    except Exception as e:
-        raise RuntimeError("\u001b[31;1m%s\u001b[0m" % (e))
-    finally:
-        if not result:
-            print("\u001b[31;1mCan not get target information\u001b[0m")
+            response = requests.get(url,headers=headers ,timeout=30)
+            result = response.text
+            retry = False
+            response.raise_for_status()
+    except requests.exceptions.ConnectionError as e:
+            retry = False
+            print("\u001b[31;1mCan not connect to server. Check your internet connection.\u001b[0m")
+    except requests.exceptions.Timeout as e:
+            retry = True
+            print("\u001b[31;1mOOPS!! Timeout Error. Retrying in 2 seconds.\u001b[0m")
+            time.sleep(2)
+    except requests.exceptions.HTTPError as err:
+            retry = True
+            print(f"\u001b[31;1m {err}. Retrying in 2 seconds.\u001b[0m")
+            time.sleep(2)
+    except requests.exceptions.RequestException as e:
+            retry = True
+            print("\u001b[31;1m {e} Can not get target information\u001b[0m")
             print("\u001b[31;1mIf you think this is a bug or unintentional behaviour. Report here : https://github.com/devanshbatham/ParamSpider/issues\u001b[0m")
-        return result
+    except KeyboardInterrupt as k:
+            retry = False
+            print("\u001b[31;1mInterrupted by user\u001b[0m")
+            raise SystemExit(k)
+    finally:
+            return result, retry
