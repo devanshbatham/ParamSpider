@@ -45,7 +45,7 @@ def main():
     
     retry = True
     retries = 0
-    while retry == True and retries <= args.retries:
+    while retry == True and retries <= int(args.retries):
              response, retry = requester.connector(url)
              retry = retry
              retries += 1
