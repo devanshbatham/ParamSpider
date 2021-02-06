@@ -4,7 +4,7 @@ import re
 def param_extract(response, level, black_list, placeholder):
 
     ''' 
-    Function to extract URL with parameters (ignoring the black list extention)
+    Function to extract URLs with parameters (ignoring the black list extention)
     regexp : r'.*?:\/\/.*\?.*\=[^$]'
     
     '''
