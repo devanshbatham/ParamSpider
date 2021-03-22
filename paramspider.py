@@ -38,7 +38,7 @@ def main():
     parser.add_argument('-r', '--retries', help='Specify number of retries for 4xx and 5xx errors', default=3)
     args = parser.parse_args()
 
-    if args.subs == True:
+    if args.subs == True or " True":
         url = f"https://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
     else:
         url = f"https://web.archive.org/cdx/search/cdx?url={args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
