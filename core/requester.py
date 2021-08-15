@@ -1,6 +1,8 @@
 import requests
 import random
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def connector(url):
     result = False
@@ -36,7 +38,7 @@ def connector(url):
  
     try:
         # TODO control request headers in here
-            response = requests.get(url,headers=headers ,timeout=30)
+            response = requests.get(url,headers=headers ,timeout=30, verify=False)
             result = response.text
             retry = False
             response.raise_for_status()
