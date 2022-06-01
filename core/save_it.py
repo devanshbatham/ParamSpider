@@ -21,6 +21,6 @@ def save_func(final_urls, outfile, domain):
             if exc.errno != errno.EEXIST:
                 raise
 
-    for i in final_urls:
-        with open(filename, "a", encoding="utf-8") as f:
+    with open(filename, "a", encoding="utf-8") as f:
+        for i in final_urls:
             f.write(i + "\n")
