@@ -12,9 +12,16 @@ import time
 start_time = time.time()
 
 
-def main():
-    if os.name == 'nt':
+def clear_screen():
+    """Clears the screen"""
+    if os.name == 'nt': # for windows
         os.system('cls')
+    else: # for linux
+        os.system('clear')
+
+
+def print_banner():
+    """Prints the banner"""
     banner = """\u001b[36m
 
          ___                               _    __       
@@ -27,6 +34,9 @@ def main():
     """
     print(banner)
 
+
+def get_args():
+    """Get arguments from the user"""
     parser = argparse.ArgumentParser(description='ParamSpider a parameter discovery suite')
     parser.add_argument('-d','--domain' , help = 'Domain name of the taget [ex : hackerone.com]' , required=True)
     parser.add_argument('-s' ,'--subs' , help = 'Set False for no subs [ex : --subs False ]' , default='True', choices=['True','False'])
@@ -36,7 +46,16 @@ def main():
     parser.add_argument('-p','--placeholder' , help = 'The string to add as a placeholder after the parameter name.', default = "FUZZ")
     parser.add_argument('-q', '--quiet', help='Do not print the results to the screen', action='store_true')
     parser.add_argument('-r', '--retries', help='Specify number of retries for 4xx and 5xx errors', default=3)
+
     args = parser.parse_args()
+    return args
+
+
+def main():
+    clear_screen()
+    print_banner()
+
+    args = get_args()
 
     if args.subs == 'True':
         url = f"https://web.archive.org/cdx/search/cdx?url=*.{args.domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
