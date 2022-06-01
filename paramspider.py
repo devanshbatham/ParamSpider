@@ -3,11 +3,8 @@ from core import requester
 from core import extractor
 from core import save_it
 from urllib.parse import unquote 
-import requests
-import re
 import argparse
 import os
-import sys
 import time 
 start_time = time.time()
 
