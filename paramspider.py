@@ -91,8 +91,7 @@ def get_args():
         default=3,
     )
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def main():
