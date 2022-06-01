@@ -6,8 +6,20 @@ from urllib.parse import unquote
 import argparse
 import os
 import time
+import colorama
+from colorama import Fore
 
 start_time = time.time()
+
+colorama.init()
+
+RED = Fore.RED
+GREEN = Fore.GREEN
+LIGHTGREEN_EX = Fore.LIGHTGREEN_EX
+BLUE = Fore.BLUE
+GREEN = Fore.GREEN
+CYAN = Fore.CYAN
+RESET = Fore.RESET
 
 
 def clear_screen():
@@ -20,15 +32,15 @@ def clear_screen():
 
 def print_banner():
     """Prints the banner"""
-    banner = """\u001b[36m
+    banner = f"""{CYAN}
 
          ___                               _    __       
         / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
        / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
       /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
-                                  /_/     \u001b[0m               
+                                  /_/     {RESET}               
                             
-                           \u001b[32m - coded with <3 by Devansh Batham\u001b[0m 
+                           {GREEN} - coded with <3 by Devansh Batham{RESET} 
     """
     print(banner)
 
@@ -115,7 +127,7 @@ def main():
             black_list.append("." + args.exclude)
 
         print(
-            f"\u001b[31m[!] URLS containing these extensions will be excluded from the results   : {black_list}\u001b[0m\n"
+            f"{RED}[!] URLS containing these extensions will be excluded from the results   : {black_list}{RESET}\n"
         )
 
     final_uris = extractor.param_extract(
@@ -124,29 +136,28 @@ def main():
     save_it.save_func(final_uris, args.output, args.domain)
 
     if not args.quiet:
-        print("\u001b[32;1m")
+        print(f"{LIGHTGREEN_EX}")
         print("\n".join(final_uris))
-        print("\u001b[0m")
+        print(f"{RESET}")
 
-    print(f"\n\u001b[32m[+] Total number of retries:  {retries-1}\u001b[31m")
-    print(f"\u001b[32m[+] Total unique urls found : {len(final_uris)}\u001b[31m")
+    print(f"\n{GREEN}[+] Total number of retries:  {retries-1}{RED}")
+    print(f"{GREEN}[+] Total unique urls found : {len(final_uris)}{RED}")
     if args.output:
         if "/" in args.output:
             print(
-                f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36m{args.output}\u001b[31m"
+                f"{GREEN}[+] Output is saved here :{RED} {Fore.CYAN}{args.output}{RED}"
             )
 
         else:
             print(
-                f"\u001b[32m[+] Output is saved here :\u001b[31m \u001b[36moutput/{args.output}\u001b[31m"
+                f"{GREEN}[+] Output is saved here :{RED} {Fore.CYAN}output/{args.output}{RED}"
             )
     else:
         print(
-            f"\u001b[32m[+] Output is saved here   :\u001b[31m \u001b[36moutput/{args.domain}.txt\u001b[31m"
+            f"{GREEN}[+] Output is saved here   :{RED} {Fore.CYAN}output/{args.domain}.txt{RED}"
         )
     print(
-        "\n\u001b[31m[!] Total execution time      : %ss\u001b[0m"
-        % str((time.time() - start_time))[:-12]
+        f"\n{RED}[!] Total execution time      : {str((time.time() - start_time))[:-12]}s{RESET}"
     )
 
 

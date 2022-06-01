@@ -1,5 +1,12 @@
 import requests
 import random
+import colorama
+from colorama import Fore
+
+colorama.init()
+
+LIGHTRED = Fore.LIGHTRED_EX
+RESET = Fore.RESET
 
 
 def connector(url):
@@ -43,25 +50,25 @@ def connector(url):
     except requests.exceptions.ConnectionError as e:
         retry = False
         print(
-            "\u001b[31;1mCan not connect to server. Check your internet connection.\u001b[0m"
+            f"{LIGHTRED}Can not connect to server. Check your internet connection.{RESET}"
         )
     except requests.exceptions.Timeout as e:
         retry = True
-        print("\u001b[31;1mOOPS!! Timeout Error. Retrying in 2 seconds.\u001b[0m")
+        print(f"{LIGHTRED}OOPS!! Timeout Error. Retrying in 2 seconds.{RESET}")
         time.sleep(2)
     except requests.exceptions.HTTPError as err:
         retry = True
-        print(f"\u001b[31;1m {err}. Retrying in 2 seconds.\u001b[0m")
+        print(f"{LIGHTRED} {err}. Retrying in 2 seconds.{RESET}")
         time.sleep(2)
     except requests.exceptions.RequestException as e:
         retry = True
-        print("\u001b[31;1m {e} Can not get target information\u001b[0m")
+        print(f"{LIGHTRED} {e} Can not get target information{RESET}")
         print(
-            "\u001b[31;1mIf you think this is a bug or unintentional behaviour. Report here : https://github.com/devanshbatham/ParamSpider/issues\u001b[0m"
+            f"{LIGHTRED}If you think this is a bug or unintentional behaviour. Report here : https://github.com/devanshbatham/ParamSpider/issues{RESET}"
         )
     except KeyboardInterrupt as k:
         retry = False
-        print("\u001b[31;1mInterrupted by user\u001b[0m")
+        print(f"{LIGHTRED}Interrupted by user{RESET}")
         raise SystemExit(k)
     finally:
         return result, retry
