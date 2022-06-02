@@ -15,7 +15,7 @@ colorama.init()
 
 RED = Fore.RED
 GREEN = Fore.GREEN
-LIGHTGREEN_EX = Fore.LIGHTGREEN_EX
+LIGHTGREEN = Fore.LIGHTGREEN_EX
 BLUE = Fore.BLUE
 GREEN = Fore.GREEN
 CYAN = Fore.CYAN
@@ -135,7 +135,7 @@ def main():
     save_it.save_func(final_uris, args.output, args.domain)
 
     if not args.quiet:
-        print(f"{LIGHTGREEN_EX}")
+        print(f"{LIGHTGREEN}")
         print("\n".join(final_uris))
         print(f"{RESET}")
 
@@ -144,16 +144,16 @@ def main():
     if args.output:
         if "/" in args.output:
             print(
-                f"{GREEN}[+] Output is saved here :{RED} {Fore.CYAN}{args.output}{RED}"
+                f"{GREEN}[+] Output is saved here :{RED} {CYAN}{args.output}{RED}"
             )
 
         else:
             print(
-                f"{GREEN}[+] Output is saved here :{RED} {Fore.CYAN}output/{args.output}{RED}"
+                f"{GREEN}[+] Output is saved here :{RED} {CYAN}output/{args.output}{RED}"
             )
     else:
         print(
-            f"{GREEN}[+] Output is saved here   :{RED} {Fore.CYAN}output/{args.domain}.txt{RED}"
+            f"{GREEN}[+] Output is saved here   :{RED} {CYAN}output/{args.domain}.txt{RED}"
         )
     print(
         f"\n{RED}[!] Total execution time      : {str((time.time() - start_time))[:-12]}s{RESET}"
