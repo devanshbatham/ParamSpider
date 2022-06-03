@@ -135,17 +135,15 @@ def main():
     save_it.save_func(final_uris, args.output, args.domain)
 
     if not args.quiet:
-        print(f"{LIGHTGREEN}")
+        print(LIGHTGREEN)
         print("\n".join(final_uris))
-        print(f"{RESET}")
+        print(RESET)
 
     print(f"\n{GREEN}[+] Total number of retries:  {retries-1}{RED}")
     print(f"{GREEN}[+] Total unique urls found : {len(final_uris)}{RED}")
     if args.output:
         if "/" in args.output:
-            print(
-                f"{GREEN}[+] Output is saved here :{RED} {CYAN}{args.output}{RED}"
-            )
+            print(f"{GREEN}[+] Output is saved here :{RED} {CYAN}{args.output}{RED}")
 
         else:
             print(
