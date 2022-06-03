@@ -10,9 +10,9 @@ LIGHTRED = Fore.LIGHTRED_EX
 RESET = Fore.RESET
 
 
-def connector(url):
-    result = False
-    user_agent_list = [
+def get_random_user_agent():
+    """Returns a random user agent"""
+    user_agents = [
         # Chrome
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
         "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36",
@@ -39,7 +39,13 @@ def connector(url):
         "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)",
         "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)",
     ]
-    user_agent = random.choice(user_agent_list)
+    return random.choice(user_agents)
+
+
+def connector(url):
+    result = False
+
+    user_agent = get_random_user_agent()
     headers = {"User-Agent": user_agent}
 
     try:
