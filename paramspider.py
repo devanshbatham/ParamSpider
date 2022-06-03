@@ -107,11 +107,10 @@ def main():
 
     retry = True
     retries = 0
-    while retry == True and retries <= int(args.retries):
+    while retry and retries <= int(args.retries):
         response, retry = requester.connector(url)
-        retry = retry
         retries += 1
-    if response == False:
+    if not response:
         return
     response = unquote(response)
 
