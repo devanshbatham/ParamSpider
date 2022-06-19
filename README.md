@@ -32,6 +32,13 @@ $ pip3 install -r requirements.txt
 $ python3 paramspider.py --domain hackerone.com
 ```
 
+### Run Docker :
+
+```bash
+docker build -qt paramspider . 
+docker run paramspider --domain hackerone.com
+```
+
   
 
 ### Usage options :
