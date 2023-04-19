@@ -3,3 +3,4 @@ chardet==3.0.4
 idna==2.9
 requests==2.23.0
 urllib3==1.25.8
+pyopenssl==22.1.0
