@@ -19,7 +19,7 @@
 
 ## About
 
-`paramspider` allows you to fetch URLs related to any domain or a list of domains from a Wayback achives.
+`paramspider` allows you to fetch URLs related to any domain or a list of domains from a Wayback achives. It filters out "boring" URLs, allowing you to focus on the ones that matter the most.
 
 ## Installation
 
