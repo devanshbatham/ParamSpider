@@ -1,136 +1,72 @@
+<h1 align="center">
+    paramspider
+  <br>
+</h1>
 
-  
+<h4 align="center"> Mining URLs from dark corners of Web Archives for fuzzing/further probing </h4>
 
-## ParamSpider : Parameter miner for humans
+<p align="center">
+  <a href="#about">📖 About</a> •
+  <a href="#installation">🏗️ Installation</a> •
+  <a href="#usage">⛏️ Usage</a> •
+  <a href="#examples">🚀 Examples</a> •
+  <a href="#contributing">🤝 Contributing</a> •
+</p>
 
-![ParamSpider](https://raw.githubusercontent.com/devanshbatham/ParamSpider/master/static/banner.PNG)
+<p align="center">
+  <img src="https://github.com/devanshbatham/paramspider/blob/main/static/paramspider.png?raw=true" alt="paramspider">
+</p>
 
-### Key Features :
+## About
 
-  
+`paramspider` allows you to fetch URLs related to any domain or a list of domains from a Wayback achives.
 
-- Finds parameters from web archives of the entered domain.
+## Installation
 
-- Finds parameters from subdomains as well.
+To install `paramspider`, follow these steps:
 
-- Gives support to exclude urls with specific extensions.
-
-- Saves the output result in a nice and clean manner.
-
-- It mines the parameters from web archives (without interacting with the target host)
-
-  
-
-### Usage instructions :
-
-```
-Note : Use python 3.7+
-
-$ git clone https://github.com/devanshbatham/ParamSpider
-$ cd ParamSpider
-$ pip3 install -r requirements.txt
-$ python3 paramspider.py --domain hackerone.com
-```
-
-  
-
-### Usage options :
-
-```
-1 - For a simple scan [without the --exclude parameter]
-$ python3 paramspider.py --domain hackerone.com
--> Output ex : https://hackerone.com/test.php?q=FUZZ
-
-2 - For excluding urls with specific extensions
-$ python3 paramspider.py --domain hackerone.com --exclude php,jpg,svg
-
-3 - For finding nested parameters
-$ python3 paramspider.py --domain hackerone.com --level high
--> Output ex : https://hackerone.com/test.php?p=test&q=FUZZ
-
-4 - Saving the results
-$ python3 paramspider.py --domain hackerone.com --exclude php,jpg --output hackerone.txt
-
-5 - Using with a custom placeholder text (default is FUZZ), e.g. don't add a placeholder
-$ python3 paramspider.py --domain hackerone.com --placeholder FUZZ2
-
-6 - Using the quiet mode (without printing the URLs on screen)
-$ python3 paramspider.py --domain hackerone.com --quiet
-
-7 - Exclude subdomains [for parameters from domain+subdomains, do not specify this argument]
-$ python3 paramspider.py --domain hackerone.com --subs False 
+```sh
+git clone https://github.com/devanshbatham/paramspider
+cd paramspider
+pip install .
 ```
 
-### ParamSpider + GF (for massive pwnage)
+## Usage
 
-  
+To use `paramspider`, follow these steps:
 
-Lets say you have already installed ParamSpider and now you want to filter out the juicy parameters from plethora of parameters. No worries you can easily do it using [GF(by tomnomnom)](https://github.com/tomnomnom/gf) .
-
-  
-
-**Note** : Make sure you have [go](https://golang.org/doc/install) properly installed on your machine .
-
-  
-
-**Follow along this :**
-
-```
-$ go get -u github.com/tomnomnom/gf
-$ cp -r $GOPATH/src/github.com/tomnomnom/gf/examples ~/.gf
-
-Note : Replace '/User/levi/go/bin/gf' with the path where gf binary is located in your system.
-
-$ alias gf='/User/levi/go/bin/gf'
-$ cd ~/.gf/
-
-Note : Paste JSON files(https://github.com/devanshbatham/ParamSpider/tree/master/gf_profiles) in ~/.gf/ folder
-
-Now run ParamSpider and navigate to the output directory
-
-$ gf redirect domain.txt //for potential open redirect/SSRF parameters
-$ gf xss domain.txt //for potential xss vulnerable parameters
-$ gf potential domain.txt //for xss + ssrf + open redirect parameters
-$ gf wordpress domain.txt //for wordpress urls
-
-[More GF profiles to be added in future]
+```sh
+paramspider -d example.com
 ```
 
-  
+## Examples
 
-## Example :
+Here are a few examples of how to use `paramspider`:
 
-```
-$ python3 paramspider.py --domain bugcrowd.com --exclude woff,css,js,png,svg,php,jpg --output bugcrowd.txt
-```
+- Discover parameters for a single domain:
 
-  
+  ```sh
+  paramspider -d example.com
+  ```
 
-![](https://raw.githubusercontent.com/devanshbatham/ParamSpider/master/static/example.PNG)
+- Discover parameters for multiple domains from a file:
 
-  
+  ```sh
+  paramspider -l domains.txt
+  ```
 
-#### Note :
+- Stream URLs on the termial:
 
-```
-As it fetches the parameters from web archive data ,
-so chances of false positives are high.
-```
+    ```sh 
+    paramspider -d example.com -s
+    ```
 
-### Contributing to ParamSpider :
+## Contributing
 
- - Report bugs , missing best practices 
- - Shoot my [DM](https://twitter.com/0xAsm0d3us) with new ideas 
- - Make more GF profiles (.json files)
- - Help in Fixing bugs
- - Submit Pull requests 
+Contributions are welcome! If you'd like to contribute to `paramspider`, please follow these steps:
 
- 
-  
-
-### My Twitter :
-
-
-**Say hello** : [0xAsm0d3us](https://twitter.com/0xAsm0d3us)
-
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes and commit them.
+4. Submit a pull request.
 
