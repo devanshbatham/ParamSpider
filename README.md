@@ -3,7 +3,7 @@
   <br>
 </h1>
 
-<h4 align="center"> Mining URLs from dark corners of Web Archives for fuzzing/further probing </h4>
+<h4 align="center">  Mining URLs from dark corners of Web Archives for bug hunting/fuzzing/further probing </h4>
 
 <p align="center">
   <a href="#about">📖 About</a> •
