@@ -13,13 +13,12 @@
   <a href="#contributing">🤝 Contributing</a> •
 </p>
 
-<p align="center">
-  <img src="https://github.com/devanshbatham/paramspider/blob/main/static/paramspider.png?raw=true" alt="paramspider">
-</p>
+
+![paramspider](https://github.com/devanshbatham/ParamSpider/blob/master/static/paramspider.png?raw=true)
 
 ## About
 
-`paramspider` allows you to fetch URLs related to any domain or a list of domains from a Wayback achives. It filters out "boring" URLs, allowing you to focus on the ones that matter the most.
+`paramspider` allows you to fetch URLs related to any domain or a list of domains from Wayback achives. It filters out "boring" URLs, allowing you to focus on the ones that matter the most.
 
 ## Installation
 
