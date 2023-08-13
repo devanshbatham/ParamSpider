@@ -43,13 +43,13 @@ paramspider -d example.com
 
 Here are a few examples of how to use `paramspider`:
 
-- Discover parameters for a single domain:
+- Discover URLs for a single domain:
 
   ```sh
   paramspider -d example.com
   ```
 
-- Discover parameters for multiple domains from a file:
+- Discover URLs for multiple domains from a file:
 
   ```sh
   paramspider -l domains.txt
