@@ -69,3 +69,9 @@ Contributions are welcome! If you'd like to contribute to `paramspider`, please 
 3. Make your changes and commit them.
 4. Submit a pull request.
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=devanshbatham/paramspider&type=Date)](https://star-history.com/#devanshbatham/paramspider&Date)
+
+
