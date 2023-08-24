@@ -57,7 +57,7 @@ def fetch_url_content(url):
             time.sleep(5)
         except KeyboardInterrupt:
             logging.warning("Keyboard Interrupt re ceived. Exiting gracefully...")
-            return None
+            sys.exit()
 
     logging.error(f"Failed to fetch URL {url} after {MAX_RETRIES} retries.")
-    return None
+    sys.exit()
