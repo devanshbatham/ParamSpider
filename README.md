@@ -60,6 +60,11 @@ Here are a few examples of how to use `paramspider`:
     paramspider -d example.com -s
     ```
 
+- Set up web request proxy:
+
+    ```sh
+    paramspider -d example.com -p '127.0.0.1:7890'
+    ```
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to `paramspider`, please follow these steps:

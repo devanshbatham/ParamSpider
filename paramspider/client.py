@@ -35,13 +35,17 @@ def load_user_agents():
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"
   ]
 
-def fetch_url_content(url):
+def fetch_url_content(url,proxy):
     """
     Fetches the content of a URL using a random user agent.
     Retries up to MAX_RETRIES times if the request fails.
     """
     user_agents = load_user_agents()
-
+    if proxy is not None:
+        proxy={
+            'http':proxy,
+            'https':proxy
+        }
     for i in range(MAX_RETRIES):
         user_agent = random.choice(user_agents)
         headers = {
@@ -49,7 +53,7 @@ def fetch_url_content(url):
         }
 
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, proxies=proxy,headers=headers)
             response.raise_for_status()
             return response
         except (requests.exceptions.RequestException, ValueError):

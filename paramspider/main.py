@@ -78,7 +78,7 @@ def clean_urls(urls, extensions):
             cleaned_urls.add(cleaned_url)
     return list(cleaned_urls)
 
-def fetch_and_clean_urls(domain, extensions, stream_output):
+def fetch_and_clean_urls(domain, extensions, stream_output,proxy):
     """
     Fetch and clean URLs related to a specific domain from the Wayback Machine.
 
@@ -92,7 +92,7 @@ def fetch_and_clean_urls(domain, extensions, stream_output):
     """
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
     wayback_uri = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&collapse=urlkey&fl=original&page=/"
-    response = client.fetch_url_content(wayback_uri)
+    response = client.fetch_url_content(wayback_uri,proxy)
     urls = response.text.split()
     
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
@@ -134,6 +134,7 @@ def main():
     parser.add_argument("-d", "--domain", help="Domain name to fetch related URLs for.")
     parser.add_argument("-l", "--list", help="File containing a list of domain names.")
     parser.add_argument("-s", "--stream", action="store_true", help="Stream URLs on the terminal.")
+    parser.add_argument("-p", "--proxy", help="Set the proxy address for web requests.",default=None)
     args = parser.parse_args()
 
     if not args.domain and not args.list:
@@ -153,11 +154,11 @@ def main():
     extensions = HARDCODED_EXTENSIONS
 
     if args.domain:
-        fetch_and_clean_urls(domain, extensions, args.stream)
+        fetch_and_clean_urls(domain, extensions, args.stream,args.proxy)
 
     if args.list:
         for domain in domains:
-            fetch_and_clean_urls(domain, extensions, args.stream)
+            fetch_and_clean_urls(domain, extensions, args.stream,args.proxy)
 
 if __name__ == "__main__":
     main()
