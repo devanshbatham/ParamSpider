@@ -65,6 +65,12 @@ Here are a few examples of how to use `paramspider`:
     ```sh
     paramspider -d example.com --proxy '127.0.0.1:7890'
     ```
+- Adding a placeholder for URL parameter values (default: "FUZZ"): 
+
+  ```sh
+   paramspider -d example.com -p '"><h1>reflection</h1>'
+  ```
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to `paramspider`, please follow these steps:
