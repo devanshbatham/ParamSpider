@@ -9,7 +9,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'requests',
-        'colorama'
+        'colorama',
+        'fake-useragent'
     ],
     entry_points={
         'console_scripts': [
