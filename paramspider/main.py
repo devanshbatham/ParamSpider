@@ -78,7 +78,7 @@ def clean_urls(urls, extensions, placeholder):
             cleaned_urls.add(cleaned_url)
     return list(cleaned_urls)
 
-def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
+def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder,output):
     """
     Fetch and clean URLs related to a specific domain from the Wayback Machine.
 
@@ -102,12 +102,15 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
     
-    results_dir = "results"
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+    if output == None:
+        
+        results_dir = "results"
+        if not os.path.exists(results_dir):
+            os.makedirs(results_dir)
 
-    result_file = os.path.join(results_dir, f"{domain}.txt")
-
+        result_file = os.path.join(results_dir, f"{domain}.txt")
+    else:
+        result_file=output
     with open(result_file, "w") as f:
         for url in cleaned_urls:
             if "?" in url:
@@ -129,7 +132,7 @@ def main():
  / .__/\_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
 /_/                          /_/                    
 
-                              with <3 by @0xasm0d3us           
+                              with <3 by @0xasm0d3us          
     """
     colored_log_text = f"{yellow_color_code}{log_text}{reset_color_code}"
     print(colored_log_text)
@@ -138,6 +141,7 @@ def main():
     parser.add_argument("-l", "--list", help="File containing a list of domain names.")
     parser.add_argument("-s", "--stream", action="store_true", help="Stream URLs on the terminal.")
     parser.add_argument("--proxy", help="Set the proxy address for web requests.",default=None)
+    parser.add_argument("-o", "--output", help="Default output file.",default=None)
     parser.add_argument("-p", "--placeholder", help="placeholder for parameter values", default="FUZZ")
     args = parser.parse_args()
 
@@ -149,20 +153,20 @@ def main():
 
     if args.list:
         with open(args.list, "r") as f:
-            domains = [line.strip().lower().replace('https://', '').replace('http://', '') for line in f.readlines()]
+            domains = [line.strip().lower().replace('https://', '').replace('http://', '').replace('/', '') for line in f.readlines()]
             domains = [domain for domain in domains if domain]  # Remove empty lines
             domains = list(set(domains))  # Remove duplicates
     else:
-        domain = args.domain
+        domain = args.domain.replace('https://', '').replace('http://', '').replace('/', '')
 
     extensions = HARDCODED_EXTENSIONS
 
     if args.domain:
-        fetch_and_clean_urls(domain, extensions, args.stream, args.proxy, args.placeholder)
+        fetch_and_clean_urls(domain, extensions, args.stream, args.proxy, args.placeholder,args.output)
 
     if args.list:
         for domain in domains:
-            fetch_and_clean_urls(domain, extensions, args.stream,args.proxy, args.placeholder)
+            fetch_and_clean_urls(domain, extensions, args.stream,args.proxy, args.placeholder,args.output)
 
 if __name__ == "__main__":
     main()

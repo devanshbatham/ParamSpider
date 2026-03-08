@@ -59,7 +59,11 @@ Here are a few examples of how to use `paramspider`:
     ```sh 
     paramspider -d example.com -s
     ```
+- Output to specific file:
 
+    ```sh 
+    paramspider -d example.com -o outputfile
+    ```
 - Set up web request proxy:
 
     ```sh
