@@ -64,4 +64,4 @@ def fetch_url_content(url,proxy):
             sys.exit()
 
     logging.error(f"Failed to fetch URL {url} after {MAX_RETRIES} retries.")
-    sys.exit()
+    return None

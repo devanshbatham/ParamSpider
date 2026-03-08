@@ -93,6 +93,8 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
     wayback_uri = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&collapse=urlkey&fl=original&page=/"
     response = client.fetch_url_content(wayback_uri,proxy)
+    if response == None:
+        return
     urls = response.text.split()
     
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
