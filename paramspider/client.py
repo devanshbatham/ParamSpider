@@ -60,7 +60,7 @@ def fetch_url_content(url,proxy):
             logging.warning(f"Error fetching URL {url}. Retrying in 5 seconds...")
             time.sleep(5)
         except KeyboardInterrupt:
-            logging.warning("Keyboard Interrupt re ceived. Exiting gracefully...")
+            logging.warning("Keyboard Interrupt received. Exiting gracefully...")
             sys.exit()
 
     logging.error(f"Failed to fetch URL {url} after {MAX_RETRIES} retries.")
