@@ -5,6 +5,9 @@ import logging
 import time
 import sys
 
+from urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 logging.basicConfig(level=logging.INFO)
@@ -53,7 +56,7 @@ def fetch_url_content(url,proxy):
         }
 
         try:
-            response = requests.get(url, proxies=proxy,headers=headers)
+            response = requests.get(url, proxies=proxy,headers=headers,verify=False)
             response.raise_for_status()
             return response
         except (requests.exceptions.RequestException, ValueError):
