@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
 import argparse
 import os
 import logging
 import colorama
 from colorama import Fore, Style
+from urllib.parse import urlparse, parse_qs, urlencode, unquote
+import time 
 from . import client  # Importing client from a module named "client"
-from urllib.parse import urlparse, parse_qs, urlencode
-import os
+
+start_time = time.time()
 
 yellow_color_code = "\033[93m"
 reset_color_code = "\033[0m"
@@ -78,22 +81,32 @@ def clean_urls(urls, extensions, placeholder):
             cleaned_urls.add(cleaned_url)
     return list(cleaned_urls)
 
-def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
+def fetch_and_clean_urls(domain, extensions, stream_output, proxy, placeholder, output_filename, subs):
     """
     Fetch and clean URLs related to a specific domain from the Wayback Machine.
 
     Args:
-        domain (str): The domain name to fetch URLs for.
+        domain (str): The domain name to fetch related URLs for.
         extensions (list): List of file extensions to check against.
         stream_output (bool): True to stream URLs to the terminal.
+        output_filename (str): Name of the output file.
+        subs (bool): True to include subdomains.
 
     Returns:
         None
     """
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
-    wayback_uri = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&collapse=urlkey&fl=original&page=/"
-    response = client.fetch_url_content(wayback_uri,proxy)
-    urls = response.text.split()
+    if subs:
+        url = f"https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+    else:
+        url = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+
+    response = client.fetch_url_content(url, proxy)
+    if response is False:
+        return
+
+    response = unquote(response.text)
+    urls = response.split()
     
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
     
@@ -102,11 +115,14 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
     
-    results_dir = "results"
+    results_dir = "output"
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
-
-    result_file = os.path.join(results_dir, f"{domain}.txt")
+    
+    if output_filename:
+        result_file = os.path.join(results_dir, f"{output_filename}")
+    else:
+        result_file =  os.path.join(results_dir, f"{domain}.txt")
 
     with open(result_file, "w") as f:
         for url in cleaned_urls:
@@ -114,22 +130,85 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
                 f.write(url + "\n")
                 if stream_output:
                     print(url)
-    
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Saved cleaned URLs to {Fore.CYAN + result_file + Style.RESET_ALL}")
+    print("\u001b[31m[!] Total Execution Time : %ss\u001b[0m" % str((time.time() - start_time))[:-12] +"\n")
+
+def fetch_urls_from_list(list_file, subs):
+    """
+    Fetch and clean URLs from a list of domains.
+
+    Args:
+        list_file (str): Path to the file containing a list of domain names.
+        subs (bool): True to include subdomains.
+
+    Returns:
+        None
+    """
+    combined_urls = []
+    with open(list_file, "r") as f:
+        domains = [line.strip().lower().replace('https://', '').replace('http://', '') for line in f.readlines()]
+        domains = [domain for domain in domains if domain]  # Remove empty lines
+        domains = list(set(domains))  # Remove duplicates
+
+        for domain in domains:
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
+            if subs:
+                url = f"https://web.archive.org/cdx/search/cdx?url=*.{domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+            else:
+                url = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&fl=original&collapse=urlkey&page=/"
+
+            response = client.fetch_url_content(url, None)
+            if response is False:
+                continue
+
+            response = unquote(response.text)
+            urls = response.split()
+            
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
+            
+            cleaned_urls = clean_urls(urls, HARDCODED_EXTENSIONS, "FUZZ")
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Cleaning URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
+            
+            combined_urls.extend(cleaned_urls)
+
+            results_dir = "output"
+            if not os.path.exists(results_dir):
+                os.makedirs(results_dir)
+            
+            result_file = os.path.join(results_dir, f"{domain}.txt")
+
+            with open(result_file, "w") as f:
+                for url in cleaned_urls:
+                    if "?" in url:
+                        f.write(url + "\n")
+        
+            logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Saved cleaned URLs to {Fore.CYAN + result_file + Style.RESET_ALL}"+"\n")
+
+    # Save combined URLs to a separate file
+    combined_output_file = os.path.join(results_dir, "combined.txt")
+    with open(combined_output_file, "w") as f:
+        for url in combined_urls:
+            f.write(url + "\n")
+    logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Saved combined URLs to {Fore.CYAN + combined_output_file + Style.RESET_ALL}")
+    print("\u001b[31m[!] Total Execution Time : %ss\u001b[0m" % str((time.time() - start_time))[:-12] +"\n")
 
 def main():
     """
     Main function to handle command-line arguments and start URL mining process.
     """
     log_text = """
-           
-                                      _    __       
-   ___  ___ ________ ___ _  ___ ___  (_)__/ /__ ____
-  / _ \/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
- / .__/\_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
-/_/                          /_/                    
+    ____                            _____       _     __         
+   / __ \____ __________ _____ ___ / ___/____  (_)___/ /__  _____
+  / /_/ / __ `/ ___/ __ `/ __ `__ \\__ \/ __ \/ / __  / _ \/ ___/
+ / ____/ /_/ / /  / /_/ / / / / / /__/ / /_/ / / /_/ /  __/ /    
+/_/    \__,_/_/   \__,_/_/ /_/ /_/____/ .___/_/\__,_/\___/_/     
+                                     /_/                         
 
-                              with <3 by @0xasm0d3us           
+                                 with <3 by @0xasm0d3us           
+                            with <3 Upgraded by PushkraJ99 :}    
+
     """
     colored_log_text = f"{yellow_color_code}{log_text}{reset_color_code}"
     print(colored_log_text)
@@ -137,8 +216,10 @@ def main():
     parser.add_argument("-d", "--domain", help="Domain name to fetch related URLs for.")
     parser.add_argument("-l", "--list", help="File containing a list of domain names.")
     parser.add_argument("-s", "--stream", action="store_true", help="Stream URLs on the terminal.")
-    parser.add_argument("--proxy", help="Set the proxy address for web requests.",default=None)
-    parser.add_argument("-p", "--placeholder", help="placeholder for parameter values", default="FUZZ")
+    parser.add_argument("--proxy", help="Set the proxy address for web requests.", default=None)
+    parser.add_argument("-p", "--placeholder", help="Placeholder for parameter values", default="FUZZ")
+    parser.add_argument("-o", "--output", help="Specify the name of the output file.")
+    parser.add_argument("--subs", action="store_true", help="Include subdomains.")
     args = parser.parse_args()
 
     if not args.domain and not args.list:
@@ -148,21 +229,10 @@ def main():
         parser.error("Please provide either the -d option or the -l option, not both.")
 
     if args.list:
-        with open(args.list, "r") as f:
-            domains = [line.strip().lower().replace('https://', '').replace('http://', '') for line in f.readlines()]
-            domains = [domain for domain in domains if domain]  # Remove empty lines
-            domains = list(set(domains))  # Remove duplicates
+        fetch_urls_from_list(args.list, args.subs)
     else:
         domain = args.domain
-
-    extensions = HARDCODED_EXTENSIONS
-
-    if args.domain:
-        fetch_and_clean_urls(domain, extensions, args.stream, args.proxy, args.placeholder)
-
-    if args.list:
-        for domain in domains:
-            fetch_and_clean_urls(domain, extensions, args.stream,args.proxy, args.placeholder)
+        fetch_and_clean_urls(domain, HARDCODED_EXTENSIONS, args.stream, args.proxy, args.placeholder, args.output, args.subs)
 
 if __name__ == "__main__":
     main()
