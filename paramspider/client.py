@@ -4,7 +4,8 @@ import json
 import logging
 import time
 import sys
-
+import colorama
+from colorama import Fore, Style
 
 
 logging.basicConfig(level=logging.INFO)
@@ -56,12 +57,12 @@ def fetch_url_content(url,proxy):
             response = requests.get(url, proxies=proxy,headers=headers)
             response.raise_for_status()
             return response
-        except (requests.exceptions.RequestException, ValueError):
-            logging.warning(f"Error fetching URL {url}. Retrying in 5 seconds...")
+        except (requests.exceptions.RequestException, ValueError): 
+            logging.warning(f"\n{Fore.YELLOW}[RETRY] {Style.RESET_ALL}Error fetching URL {Fore.CYAN + url + Style.RESET_ALL}. Retrying in 5 seconds...\n")
             time.sleep(5)
         except KeyboardInterrupt:
             logging.warning("Keyboard Interrupt re ceived. Exiting gracefully...")
             sys.exit()
 
     logging.error(f"Failed to fetch URL {url} after {MAX_RETRIES} retries.")
-    sys.exit()
+    return None

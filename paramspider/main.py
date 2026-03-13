@@ -3,9 +3,11 @@ import os
 import logging
 import colorama
 from colorama import Fore, Style
-from . import client  # Importing client from a module named "client"
+from . import client   # Importing client from a module named "client"
 from urllib.parse import urlparse, parse_qs, urlencode
 import os
+from datetime import datetime
+
 
 yellow_color_code = "\033[93m"
 reset_color_code = "\033[0m"
@@ -20,6 +22,16 @@ HARDCODED_EXTENSIONS = [
     ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".svg", ".json",
     ".css", ".js", ".webp", ".woff", ".woff2", ".eot", ".ttf", ".otf", ".mp4", ".txt"
 ]
+
+now = datetime.now()
+timestamp = now.strftime("%Y_%m_%d_%H:%M:%S")
+
+
+    
+
+
+
+
 
 def has_extension(url, extensions):
     """
@@ -90,9 +102,13 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     Returns:
         None
     """
+    
+   
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Fetching URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
     wayback_uri = f"https://web.archive.org/cdx/search/cdx?url={domain}/*&output=txt&collapse=urlkey&fl=original&page=/"
     response = client.fetch_url_content(wayback_uri,proxy)
+    if response == None : 
+         return
     urls = response.text.split()
     
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(urls)) + Style.RESET_ALL} URLs for {Fore.CYAN + domain + Style.RESET_ALL}")
@@ -102,18 +118,37 @@ def fetch_and_clean_urls(domain, extensions, stream_output,proxy, placeholder):
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Found {Fore.GREEN + str(len(cleaned_urls)) + Style.RESET_ALL} URLs after cleaning")
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Extracting URLs with parameters")
     
+
+    
     results_dir = "results"
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
 
-    result_file = os.path.join(results_dir, f"{domain}.txt")
 
-    with open(result_file, "w") as f:
+ 
+    
+    
+
+
+    if "/" in domain:
+        domain = domain.replace("/" , "\u2044") # "\u2044" is for fraction slash character since we can not use the normal slash / with File systems
+
+
+
+
+    result_file = os.path.join(results_dir, f"{domain}.txt") 
+    session_file = f"Session : {timestamp}.txt"
+    
+    with open(result_file, "w") as f , open(f"{results_dir}/{session_file}" , "a") as s :
         for url in cleaned_urls:
             if "?" in url:
                 f.write(url + "\n")
+                s.write(url + "\n")
+                
                 if stream_output:
                     print(url)
+                  
+
     
     logging.info(f"{Fore.YELLOW}[INFO]{Style.RESET_ALL} Saved cleaned URLs to {Fore.CYAN + result_file + Style.RESET_ALL}")
 
@@ -163,6 +198,10 @@ def main():
     if args.list:
         for domain in domains:
             fetch_and_clean_urls(domain, extensions, args.stream,args.proxy, args.placeholder)
+            
+
+     
+
 
 if __name__ == "__main__":
     main()
