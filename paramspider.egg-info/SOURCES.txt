@@ -1,0 +1,12 @@
+LICENSE
+README.md
+setup.py
+paramspider/__init__.py
+paramspider/client.py
+paramspider/main.py
+paramspider.egg-info/PKG-INFO
+paramspider.egg-info/SOURCES.txt
+paramspider.egg-info/dependency_links.txt
+paramspider.egg-info/entry_points.txt
+paramspider.egg-info/requires.txt
+paramspider.egg-info/top_level.txt

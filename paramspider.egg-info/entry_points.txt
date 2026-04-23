@@ -1,0 +1,2 @@
+[console_scripts]
+paramspider = paramspider.main:main
