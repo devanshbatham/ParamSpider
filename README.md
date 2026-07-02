@@ -22,13 +22,23 @@
 
 ## Installation
 
-To install `paramspider`, follow these steps:
+To install `paramspider`, it is recommended to use a Python virtual environment to avoid conflicts with your system's packages (especially on Linux distributions enforcing **PEP 668**).
+
+Follow these steps:
 
 ```sh
 git clone https://github.com/devanshbatham/paramspider
+
 cd paramspider
+
+python3 -m venv venv
+
+source venv/bin/activate
+
 pip install .
 ```
+
+**Note:** Whenever you want to run  paramspider  again in a new terminal session, remember to navigate to the folder and run  `source venv/bin/activate ` first.
 
 ## Usage
 
