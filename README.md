@@ -30,6 +30,15 @@ cd paramspider
 pip install .
 ```
 
+On Linux you can also use [OTinstaller](https://github.com/OSINTVerseHQ/OTinstaller), a third-party tool manager that installs `paramspider` from this repository into its own virtualenv. It isn't maintained here, so please report problems with it [on the OTinstaller tracker](https://github.com/OSINTVerseHQ/OTinstaller/issues).
+
+```sh
+pipx install otinstaller
+otinstaller init
+otinstaller install paramspider
+otinstaller run paramspider -- d:example.com   # same as paramspider -d example.com
+```
+
 ## Usage
 
 To use `paramspider`, follow these steps:
