@@ -34,6 +34,7 @@ On Linux you can also use [OTinstaller](https://github.com/OSINTVerseHQ/OTinstal
 
 ```sh
 pipx install otinstaller
+otinstaller init
 otinstaller install paramspider
 otinstaller run paramspider -- d:example.com   # same as paramspider -d example.com
 ```
